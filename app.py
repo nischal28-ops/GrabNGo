@@ -8,31 +8,50 @@ st.set_page_config(page_title="GrabNGo", page_icon="🍽️", layout="wide")
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #fff7ed, #ffe4e6);
+    background: linear-gradient(135deg, #111827, #1f2937);
+    color: white;
+}
+h1, h2, h3, p, label, span {
+    color: white !important;
 }
 .card {
-    background: white;
+    background: #ffffff;
+    color: #111827;
     padding: 20px;
-    border-radius: 18px;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
-    margin-bottom: 15px;
+    border-radius: 20px;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.35);
+    margin-bottom: 20px;
+}
+.card h3, .card p {
+    color: #111827 !important;
 }
 .title {
-    font-size: 45px;
-    font-weight: 800;
-    color: #e11d48;
+    font-size: 50px;
+    font-weight: 900;
+    color: #facc15;
     text-align: center;
 }
 .subtitle {
     text-align: center;
     font-size: 20px;
-    color: #555;
+    color: #e5e7eb;
+}
+.stButton button {
+    background-color: #facc15;
+    color: #111827;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+}
+.stButton button:hover {
+    background-color: #fde047;
+    color: black;
 }
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="title">🍽️ GrabNGo</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Pre-order food. Skip queues. Reduce waste.</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Pre-order food • Skip queues • Scan QR • Reduce waste</div>', unsafe_allow_html=True)
 
 menu = {
     "🥪 Veg Sandwich": 50,
@@ -43,10 +62,22 @@ menu = {
     "🍋 Lemon Juice": 30,
     "🍕 Pizza Slice": 70,
     "🍔 Veg Burger": 85,
-    "🥤 Oreo Shake": 100,
     "🍟 French Fries": 65,
-    "🍜 Noodles": 75,
-    "🥗 Fruit Bowl": 55
+    "🥤 Oreo Shake": 100,
+    "🍜 Schezwan Noodles": 90,
+    "🥗 Fruit Bowl": 55,
+    "🍚 Veg Fried Rice": 95,
+    "🥘 Chole Bhature": 110,
+    "🥞 Pancakes": 120,
+    "🍝 White Sauce Pasta": 130,
+    "🌮 Tacos": 100,
+    "🥛 Lassi": 45,
+    "🧃 Fresh Juice": 60,
+    "🍩 Chocolate Donut": 50,
+    "🍪 Cookies": 35,
+    "🍫 Brownie": 70,
+    "🥣 Poha": 40,
+    "🍳 Egg Roll": 75
 }
 
 if "cart" not in st.session_state:
@@ -57,31 +88,34 @@ tab1, tab2, tab3, tab4 = st.tabs(["🍴 Menu", "🛒 Cart", "💳 Payment", "�
 with tab1:
     st.header("Today's Menu")
 
-    cols = st.columns(3)
+    cols = st.columns(4)
 
     for index, (item, price) in enumerate(menu.items()):
-        with cols[index % 3]:
-            st.markdown('<div class="card">', unsafe_allow_html=True)
-            st.subheader(item)
-            st.write(f"₹{price}")
+        with cols[index % 4]:
+            st.markdown(f"""
+            <div class="card">
+                <h3>{item}</h3>
+                <p><b>Price:</b> ₹{price}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
             qty = st.number_input(
-                f"Quantity for {item}",
+                f"Quantity",
                 min_value=0,
                 max_value=10,
                 step=1,
-                key=item
+                key=f"qty_{item}"
             )
 
-            if st.button(f"Add {item}", key=f"add_{item}"):
+            if st.button(f"Add to Cart", key=f"add_{item}"):
                 if qty > 0:
                     st.session_state.cart[item] = {
                         "qty": qty,
                         "price": price
                     }
-                    st.success(f"{item} added to cart!")
+                    st.success(f"{item} added!")
                 else:
                     st.warning("Select quantity first.")
-            st.markdown('</div>', unsafe_allow_html=True)
 
 with tab2:
     st.header("🛒 Your Cart")
@@ -107,6 +141,7 @@ with tab3:
 
     name = st.text_input("Student Name")
     student_id = st.text_input("Student ID")
+
     pickup_time = st.selectbox(
         "Pickup Time",
         ["10:45 AM", "11:00 AM", "12:30 PM", "1:15 PM", "3:00 PM", "5:00 PM"]
@@ -123,7 +158,7 @@ with tab3:
         if payment_method == "UPI QR Code":
             st.subheader("Scan to Pay")
 
-            payment_text = f"Pay ₹{total} for GrabNGo order"
+            payment_text = f"GrabNGo Payment ₹{total}"
             qr = qrcode.make(payment_text)
 
             buffer = io.BytesIO()
@@ -134,13 +169,13 @@ with tab3:
 
         if st.button("Confirm Order"):
             if not name or not student_id:
-                st.warning("Please enter your name and student ID.")
+                st.warning("Enter name and student ID.")
             else:
-                st.success("Order Confirmed!")
-
                 order_id = "GNG" + datetime.now().strftime("%H%M%S")
 
+                st.success("Order Confirmed!")
                 st.subheader("✅ Order Receipt")
+
                 st.write(f"**Order ID:** {order_id}")
                 st.write(f"**Name:** {name}")
                 st.write(f"**Student ID:** {student_id}")
@@ -163,16 +198,11 @@ with tab3:
 with tab4:
     st.header("📊 Waste Reduction Impact")
 
-    st.markdown("""
-    This app helps the campus cafeteria by:
-
-    ✅ Reducing long queues  
-    ✅ Preparing food based on confirmed orders  
-    ✅ Avoiding overproduction  
-    ✅ Saving student break time  
-    ✅ Making pickup faster using QR codes  
-    """)
-
-    st.metric("Estimated Waiting Time Saved", "10 minutes")
+    st.metric("Estimated Waiting Time Saved", "10 mins")
     st.metric("Food Waste Reduced", "25%")
-    st.metric("Student Convenience", "High")
+    st.metric("Orders Prepared Accurately", "High")
+
+    st.write("""
+    GrabNGo helps cafeterias prepare food based on confirmed orders,
+    reducing overproduction, long queues, and food wastage.
+    """)
