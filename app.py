@@ -13,83 +13,94 @@ current_time = india_time.strftime("%I:%M %p")
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #faf7ff, #ffffff);
-    color: #1e1b4b;
+    background: linear-gradient(135deg, #050816, #111827);
+    color: white;
 }
 
 h1, h2, h3, p, label, span, div {
-    color: #1e1b4b !important;
+    color: white !important;
 }
 
 .title {
-    font-size: 42px;
+    font-size: 46px;
     font-weight: 900;
-    color: #6d28d9 !important;
+    color: #facc15 !important;
 }
 
 .subtitle {
-    font-size: 17px;
-    color: #4c1d95 !important;
+    font-size: 18px;
+    color: #cbd5e1 !important;
 }
 
 .top-box {
-    background: white;
-    border: 1px solid #e9d5ff;
-    border-radius: 18px;
-    padding: 18px;
-    box-shadow: 0 5px 18px rgba(109,40,217,0.12);
+    background: #111827;
+    border: 1px solid #334155;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.45);
 }
 
 .food-card {
-    background: white;
-    border: 1px solid #ddd6fe;
-    border-radius: 18px;
-    padding: 18px;
-    margin-bottom: 12px;
-    min-height: 150px;
-    box-shadow: 0 6px 18px rgba(109,40,217,0.10);
+    background: linear-gradient(145deg, #111827, #1e293b);
+    border: 1px solid #334155;
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 14px;
+    min-height: 175px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45);
 }
 
 .food-name {
-    font-size: 18px;
-    font-weight: 800;
-    color: #1e1b4b !important;
+    font-size: 19px;
+    font-weight: 900;
+    color: #ffffff !important;
 }
 
 .price {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 900;
-    color: #059669 !important;
+    color: #22c55e !important;
 }
 
 .card {
-    background: white;
-    border: 1px solid #ddd6fe;
-    border-radius: 18px;
-    padding: 18px;
+    background: #111827;
+    border: 1px solid #334155;
+    border-radius: 20px;
+    padding: 20px;
     margin-bottom: 12px;
-    box-shadow: 0 6px 18px rgba(109,40,217,0.10);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.35);
 }
 
 .stButton button {
-    background: linear-gradient(90deg, #8b5cf6, #6d28d9);
+    background: linear-gradient(90deg, #ec4899, #8b5cf6);
     color: white !important;
-    border-radius: 10px;
+    border-radius: 12px;
     border: none;
-    font-weight: 800;
+    font-weight: 900;
 }
 
 .stButton button:hover {
-    background: linear-gradient(90deg, #7c3aed, #5b21b6);
+    background: linear-gradient(90deg, #db2777, #7c3aed);
 }
 
 .metric-card {
-    background: #f5f3ff;
-    border: 1px solid #c4b5fd;
-    border-radius: 16px;
-    padding: 20px;
+    background: #111827;
+    border: 1px solid #334155;
+    border-radius: 20px;
+    padding: 22px;
     text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.35);
 }
+
+input, textarea {
+    background-color: #111827 !important;
+    color: white !important;
+}
+
+[data-baseweb="select"] {
+    background-color: #111827 !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -169,13 +180,7 @@ with tabs[0]:
             </div>
             """, unsafe_allow_html=True)
 
-            qty = st.number_input(
-                "Qty",
-                min_value=0,
-                max_value=10,
-                value=0,
-                key=f"qty_{item}"
-            )
+            qty = st.number_input("Qty", min_value=0, max_value=10, value=0, key=f"qty_{item}")
 
             if st.button("Add", key=f"add_{item}"):
                 if qty > 0:
@@ -217,19 +222,10 @@ with tabs[2]:
 
     pickup_time = st.selectbox(
         "Choose pickup time",
-        [
-            "10:30 AM - 10:45 AM",
-            "12:30 PM - 1:00 PM",
-            "1:15 PM - 1:30 PM",
-            "3:00 PM - 3:15 PM",
-            "5:00 PM - 5:15 PM"
-        ]
+        ["10:30 AM - 10:45 AM", "12:30 PM - 1:00 PM", "1:15 PM - 1:30 PM", "3:00 PM - 3:15 PM", "5:00 PM - 5:15 PM"]
     )
 
-    payment_method = st.radio(
-        "Payment Method",
-        ["UPI QR Code", "Cash at Counter", "Meal Card"]
-    )
+    payment_method = st.radio("Payment Method", ["UPI QR Code", "Cash at Counter", "Meal Card"])
 
     if st.session_state.cart:
         total = sum(details["qty"] * details["price"] for details in st.session_state.cart.values())
