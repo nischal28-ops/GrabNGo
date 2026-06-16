@@ -97,8 +97,38 @@ input, textarea {
     color: white !important;
 }
 
+/* FIX FOR PICKUP TIME DROPDOWN */
 [data-baseweb="select"] {
     background-color: #111827 !important;
+}
+
+.stSelectbox div[data-baseweb="select"] > div {
+    background-color: #111827 !important;
+    color: white !important;
+    border: 1px solid #475569 !important;
+}
+
+.stSelectbox div[data-baseweb="select"] span {
+    color: white !important;
+}
+
+.stSelectbox div[data-baseweb="select"] input {
+    color: white !important;
+}
+
+div[data-baseweb="popover"] div {
+    background-color: #111827 !important;
+    color: white !important;
+}
+
+div[role="option"] {
+    background-color: #111827 !important;
+    color: white !important;
+}
+
+div[role="option"]:hover {
+    background-color: #334155 !important;
+    color: white !important;
 }
 
 </style>
