@@ -2,68 +2,77 @@ import streamlit as st
 import qrcode
 import io
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
-st.set_page_config(page_title="GrabNGo", page_icon="🛍️", layout="wide")
+st.set_page_config(page_title="GrabNGo", page_icon="🍽️", layout="wide")
+
+india_time = datetime.now(ZoneInfo("Asia/Kolkata"))
+current_date = india_time.strftime("%d %B %Y")
+current_time = india_time.strftime("%I:%M %p")
 
 st.markdown("""
 <style>
 .stApp {
-    background: #070b1a;
-    color: white;
-}
-
-[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #090d22, #121a3a);
+    background: linear-gradient(135deg, #faf7ff, #ffffff);
+    color: #1e1b4b;
 }
 
 h1, h2, h3, p, label, span, div {
-    color: white !important;
+    color: #1e1b4b !important;
 }
 
-.main-title {
-    font-size: 38px;
+.title {
+    font-size: 42px;
     font-weight: 900;
-    color: #ffffff;
+    color: #6d28d9 !important;
 }
 
-.logo {
-    font-size: 34px;
-    font-weight: 900;
-    color: #facc15;
+.subtitle {
+    font-size: 17px;
+    color: #4c1d95 !important;
 }
 
-.card {
-    background: linear-gradient(145deg, #111827, #1e293b);
-    border: 1px solid #334155;
+.top-box {
+    background: white;
+    border: 1px solid #e9d5ff;
     border-radius: 18px;
-    padding: 16px;
-    margin-bottom: 15px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    padding: 18px;
+    box-shadow: 0 5px 18px rgba(109,40,217,0.12);
 }
 
 .food-card {
-    background: linear-gradient(145deg, #111827, #1e293b);
-    border: 1px solid #334155;
+    background: white;
+    border: 1px solid #ddd6fe;
     border-radius: 18px;
-    padding: 16px;
+    padding: 18px;
     margin-bottom: 12px;
-    min-height: 135px;
+    min-height: 150px;
+    box-shadow: 0 6px 18px rgba(109,40,217,0.10);
 }
 
 .food-name {
     font-size: 18px;
     font-weight: 800;
-    color: #ffffff !important;
+    color: #1e1b4b !important;
 }
 
 .price {
-    font-size: 16px;
-    font-weight: 800;
-    color: #22c55e !important;
+    font-size: 17px;
+    font-weight: 900;
+    color: #059669 !important;
+}
+
+.card {
+    background: white;
+    border: 1px solid #ddd6fe;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 12px;
+    box-shadow: 0 6px 18px rgba(109,40,217,0.10);
 }
 
 .stButton button {
-    background: linear-gradient(90deg, #fb7185, #ec4899);
+    background: linear-gradient(90deg, #8b5cf6, #6d28d9);
     color: white !important;
     border-radius: 10px;
     border: none;
@@ -71,14 +80,14 @@ h1, h2, h3, p, label, span, div {
 }
 
 .stButton button:hover {
-    background: linear-gradient(90deg, #f43f5e, #db2777);
+    background: linear-gradient(90deg, #7c3aed, #5b21b6);
 }
 
 .metric-card {
-    background: linear-gradient(145deg, #13251c, #1e293b);
-    border: 1px solid #22c55e;
+    background: #f5f3ff;
+    border: 1px solid #c4b5fd;
     border-radius: 16px;
-    padding: 18px;
+    padding: 20px;
     text-align: center;
 }
 </style>
@@ -89,10 +98,12 @@ menu = {
     "🧀 Cheese Maggi": 60,
     "🌯 Paneer Roll": 90,
     "🍔 Veg Burger": 85,
+    "☕ Cold Coffee": 80,
     "🥟 Samosa": 20,
     "🍟 French Fries": 65,
     "🍕 Pizza Slice": 70,
     "🍜 Schezwan Noodles": 90,
+    "🥘 Chole Bhature": 110,
     "🍚 Veg Fried Rice": 95,
     "🍝 White Sauce Pasta": 130,
     "🌮 Tacos": 100,
@@ -107,45 +118,49 @@ menu = {
     "🥣 Poha": 40,
     "🍳 Egg Roll": 75,
     "☕ Hot Coffee": 50,
-    "🥘 Chole Bhature": 110,
-    "🥗 Masala Dosa": 90
+    "🥗 Masala Dosa": 90,
+    "🍩 Chocolate Donut": 50,
+    "🥐 Croissant": 65,
+    "🍨 Ice Cream Cup": 60,
+    "🍲 Veg Biryani": 120,
+    "🧋 Bubble Tea": 130
 }
 
 if "cart" not in st.session_state:
     st.session_state.cart = {}
 
-with st.sidebar:
-    st.markdown('<div class="logo">🛍️ GrabNGo</div>', unsafe_allow_html=True)
-    st.write("Pre-order food. Skip queues. Reduce waste.")
-    st.divider()
-    st.write("🏠 Menu")
-    st.write("🛒 Cart")
-    st.write("💳 Payment")
-    st.write("📊 Impact")
-    st.divider()
-    st.info("Your pre-orders help reduce food waste and waiting time 🌱")
-
 col1, col2 = st.columns([3, 1])
+
 with col1:
-    st.markdown('<div class="main-title">👋 Welcome to GrabNGo!</div>', unsafe_allow_html=True)
-    st.write("Pre-order your favourite food, pay with QR, and pick it up on time.")
+    st.markdown('<div class="title">🍽️ GrabNGo</div>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle">Pre-order food • Skip queues • Scan QR • Reduce waste</div>', unsafe_allow_html=True)
+
 with col2:
     st.markdown(f"""
-    <div class="card">
-    📅 16 June 2026<br>
-    ⏰ {datetime.now().strftime("%I:%M %p")}
+    <div class="top-box">
+    📅 <b>{current_date}</b><br>
+    ⏰ <b>{current_time}</b>
     </div>
     """, unsafe_allow_html=True)
 
-tabs = st.tabs(["🍽️ Today's Menu", "🛒 Your Cart", "💳 Payment", "📊 Impact"])
+st.write("")
+
+tabs = st.tabs(["🍽️ Menu", "🛒 Cart", "💳 Payment", "📊 Impact"])
 
 with tabs[0]:
     st.header("🍽️ Today's Menu")
 
-    cols = st.columns(4)
+    search = st.text_input("🔍 Search food item")
 
-    for i, (item, price) in enumerate(menu.items()):
-        with cols[i % 4]:
+    filtered_menu = {
+        item: price for item, price in menu.items()
+        if search.lower() in item.lower()
+    }
+
+    cols = st.columns(5)
+
+    for i, (item, price) in enumerate(filtered_menu.items()):
+        with cols[i % 5]:
             st.markdown(f"""
             <div class="food-card">
                 <div class="food-name">{item}</div>
@@ -202,7 +217,13 @@ with tabs[2]:
 
     pickup_time = st.selectbox(
         "Choose pickup time",
-        ["10:30 AM - 10:45 AM", "12:30 PM - 1:00 PM", "1:15 PM - 1:30 PM", "3:00 PM - 3:15 PM", "5:00 PM - 5:15 PM"]
+        [
+            "10:30 AM - 10:45 AM",
+            "12:30 PM - 1:00 PM",
+            "1:15 PM - 1:30 PM",
+            "3:00 PM - 3:15 PM",
+            "5:00 PM - 5:15 PM"
+        ]
     )
 
     payment_method = st.radio(
@@ -215,20 +236,21 @@ with tabs[2]:
 
         st.subheader(f"Amount to Pay: ₹{total}")
 
-        payment_qr_text = f"GrabNGo Payment Amount ₹{total}"
-        payment_qr = qrcode.make(payment_qr_text)
-        buffer = io.BytesIO()
-        payment_qr.save(buffer, format="PNG")
-        buffer.seek(0)
-
         if payment_method == "UPI QR Code":
+            payment_qr_text = f"GrabNGo Payment Amount ₹{total}"
+            payment_qr = qrcode.make(payment_qr_text)
+
+            buffer = io.BytesIO()
+            payment_qr.save(buffer, format="PNG")
+            buffer.seek(0)
+
             st.image(buffer, caption="Scan to Pay", width=250)
 
         if st.button("Confirm Order"):
             if not name or not student_id:
                 st.warning("Enter your name and student ID.")
             else:
-                order_id = "GNG" + datetime.now().strftime("%H%M%S")
+                order_id = "GNG" + india_time.strftime("%H%M%S")
 
                 st.success("Order confirmed successfully!")
 
@@ -238,12 +260,14 @@ with tabs[2]:
                 <b>Name:</b> {name}<br>
                 <b>Student ID:</b> {student_id}<br>
                 <b>Pickup Time:</b> {pickup_time}<br>
+                <b>Payment Method:</b> {payment_method}<br>
                 <b>Total:</b> ₹{total}
                 </div>
                 """, unsafe_allow_html=True)
 
-                pickup_qr_text = f"Order ID: {order_id}\nName: {name}\nPickup: {pickup_time}\nTotal: ₹{total}"
+                pickup_qr_text = f"Order ID: {order_id}\\nName: {name}\\nPickup: {pickup_time}\\nTotal: ₹{total}"
                 pickup_qr = qrcode.make(pickup_qr_text)
+
                 buffer2 = io.BytesIO()
                 pickup_qr.save(buffer2, format="PNG")
                 buffer2.seek(0)
